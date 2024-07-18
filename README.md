@@ -4,7 +4,7 @@ Somveille M, Bossu CM, DeSaix MG, Alvarado AH, Gómez S, Rodríguez Otero G, Her
 
 The file seasonal_climate_tracking_analysis.R, in the scripts folder, contains the R code used for the analysis. This script loads several data files for the analysis. 
 - The data_for_analysis_final.csv contains the metadata (i.e. species, season, population and geographical coordinates for each sample) obtained from previously conducted genoscape analyses (see Data Accessibility Statement)
-- The files Ecoregions2017.shp, 
+- The ecoregion polygons, climate rasters and species seasonal relative abundance surfaces are all downloaded from freely available sources (see manuscript)
 
 
 
