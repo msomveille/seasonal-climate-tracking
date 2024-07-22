@@ -101,13 +101,10 @@ write.csv(seasonalAbundances_B, "results/seasonalAbundances_B.csv", row.names = 
 write.csv(seasonalAbundances_W, "results/seasonalAbundances_W.csv", row.names = F)
 
 
-## Fig S1: map of ecoregions with samples
-
-#ecoregions_abund_presence <- ecoregions_abund_presence[-7]
+## Fig S8: map of ecoregions with samples
 # Ecoregions occupied by the species used in the study
 occupied_ecoregions <- which(apply(do.call(cbind, lapply(ecoregions_abund_presence, function(x) x$wintering_abund + x$breeding_abund)), 1, sum) > 0)
-
-pdf("results/figures/Figure_S1.pdf", width = 12, height = 11)
+pdf("results/Figure_S8.pdf", width = 12, height = 11)
 ggplot() +
   geom_sf(data=newmap, col="grey60", fill="grey60") +
   geom_spatvector(data=ecoregions[occupied_ecoregions,], aes(fill=as.character(ECO_NAME)), col="grey20", lwd=0.05) +
@@ -120,9 +117,9 @@ dev.off()
 years <- 2000:2018
 months <- c("01","02","03","04","05","06","07","08","09","10","11","12")
 months_days <- c("001", "032", "060", "091", "121", "152", "182", "213", "244", "274", "305", "335")
-Temp_files <- list.files("/Users/marius.somveille/envicloud/chelsa/chelsa_V2/GLOBAL/monthly/tas")
+Temp_files <- list.files("resources/chelsa/chelsa_V2/GLOBAL/monthly/tas")
 Temp_files <- Temp_files[unlist(lapply(strsplit(Temp_files, "_"), function(x) x[4])) %in% years]
-Prec_files <- list.files("/Users/marius.somveille/envicloud/chelsa/chelsa_V2/GLOBAL/monthly/pr")
+Prec_files <- list.files("resources/chelsa/chelsa_V2/GLOBAL/monthly/pr")
 Prec_files <- Prec_files[unlist(lapply(strsplit(Prec_files, "_"), function(x) x[4])) %in% years]
 summer <- months[6:7]
 summer_days <- months_days[6:7]
@@ -130,16 +127,16 @@ winter <- months[c(1:2, 12)]
 winter_days <- months_days[c(1:2, 12)]
 
 temp_BR <- matrix(Temp_files[unlist(lapply(strsplit(Temp_files, "_"), function(x) x[3])) %in% summer], ncol=length(summer))
-temp_BR <- terra::rast(apply(temp_BR, 1, function(x) terra::rast(paste0("/Users/marius.somveille/envicloud/chelsa/chelsa_V2/GLOBAL/monthly/tas/", x)))) # load temperature rasters
+temp_BR <- terra::rast(apply(temp_BR, 1, function(x) terra::rast(paste0("resources/chelsa/chelsa_V2/GLOBAL/monthly/tas/", x)))) # load temperature rasters
 temp_BR <- (mean(temp_BR) / 10) - 273.15
 prec_BR <- matrix(Prec_files[unlist(lapply(strsplit(Prec_files, "_"), function(x) x[3])) %in% summer], ncol=length(summer))
-prec_BR <- terra::rast(apply(prec_BR, 1, function(x) terra::rast(paste0("/Users/marius.somveille/envicloud/chelsa/chelsa_V2/GLOBAL/monthly/pr/", x)))) # load precipitation rasters
+prec_BR <- terra::rast(apply(prec_BR, 1, function(x) terra::rast(paste0("resources/chelsa/chelsa_V2/GLOBAL/monthly/pr/", x)))) # load precipitation rasters
 prec_BR <- mean(prec_BR)
 temp_NB <- matrix(Temp_files[unlist(lapply(strsplit(Temp_files, "_"), function(x) x[3])) %in% winter], ncol=length(winter))
-temp_NB <- terra::rast(apply(temp_NB, 1, function(x) terra::rast(paste0("/Users/marius.somveille/envicloud/chelsa/chelsa_V2/GLOBAL/monthly/tas/", x)))) # load temperature rasters
+temp_NB <- terra::rast(apply(temp_NB, 1, function(x) terra::rast(paste0("resources/chelsa/chelsa_V2/GLOBAL/monthly/tas/", x)))) # load temperature rasters
 temp_NB <- (mean(temp_NB) / 10) - 273.15
 prec_NB <- matrix(Prec_files[unlist(lapply(strsplit(Prec_files, "_"), function(x) x[3])) %in% winter], ncol=length(winter))
-prec_NB <- terra::rast(apply(prec_NB, 1, function(x) terra::rast(paste0("/Users/marius.somveille/envicloud/chelsa/chelsa_V2/GLOBAL/monthly/pr/", x)))) # load precipitation rasters
+prec_NB <- terra::rast(apply(prec_NB, 1, function(x) terra::rast(paste0("resources/chelsa/chelsa_V2/GLOBAL/monthly/pr/", x)))) # load precipitation rasters
 prec_NB <- mean(prec_NB)
 crs(temp_BR) <- crs(prec_BR) <- crs(temp_NB) <- crs(prec_NB) <- "+proj=longlat +datum=WGS84"
 
@@ -174,10 +171,6 @@ write.csv(distanceMat, "results/distanceMatrix.csv", row.names = F, col.names = 
 climate_distanceMat <- rdist(as.matrix(ecoregions_climate_BR[,2:3]), as.matrix(ecoregions_climate_NB[,2:3]))
 thermal_distanceMat <- abs(outer(ecoregions_climate_BR$temperature, ecoregions_climate_NB$temperature, "-"))
 precipitation_distanceMat <- abs(outer(ecoregions_climate_BR$precipitation, ecoregions_climate_NB$precipitation, "-"))
-#write.csv(climate_distanceMat, "results/climate_distanceMatrix_rev.csv", row.names = F, col.names = F)
-#write.csv(thermal_distanceMat, "results/thermal_distanceMatrix_rev.csv", row.names = F, col.names = F)
-#write.csv(precipitation_distanceMat, "results/precipitation_distanceMatrix_rev.csv", row.names = F, col.names = F)
-
 
 ##  Calculate population variables used in the analysis (easonal climate overlap and migration distance)
 niche_size <- niche_size_orsim <- niche_size_climate <- niche_size_thermal <- niche_size_precipitation <- list()
@@ -321,7 +314,6 @@ for(k in 1:length(species.names)){
       max_dist <- max(rdist.earth(centroid_wintering_ecoregions_pop_orsim, miles=F))
     }else{
       max_dist <- 1500
-      #print(max_dist)
     }
     ecoreg_subset <- which(ctrs_W_orsim_dists < (max_dist/2))
     # Function to randomly sample ecoregions 
@@ -675,14 +667,14 @@ g_temp_NB <-ggplot() +
   theme_void() + scale_fill_hypso_tint_c(palette = "colombia_hypso", limits = c(-0.05, 1.3), direction=-1) +
   theme(legend.position="none")
 
-pdf("results/figures/Fig_1_temp_BR.pdf", width = 4, height = 4)
+pdf("results/Fig_1_temp_BR.pdf", width = 4, height = 4)
 g_temp_BR
 dev.off()
-pdf("results/figures/Fig_1_temp_NB.pdf", width = 4, height = 4)
+pdf("results/Fig_1_temp_NB.pdf", width = 4, height = 4)
 g_temp_NB
 dev.off()
 
-
+                               
 # Figure S10: examine relationships between climate and species relative abundance
 
 ecoregions_temp_winter_mean <- ecoregions_prec_winter_mean <- ecoregions_temp_summer_mean <- ecoregions_prec_summer_mean <- vector()
@@ -720,7 +712,7 @@ g_P_B <- ggplot() +
   geom_point(data = data_for_plot_B, aes(x=prec_summer, y=breeding_abund)) +
   geom_smooth(data = data_for_plot_B, aes(x=prec_summer, y=breeding_abund), se=T, span=1) +
   xlab("") + ylab("")
-pdf(paste0("results/figures/Fig_SM_climate_abund_", k, ".pdf"), width = 12, height = 3)
+pdf(paste0("results/Fig_SM_climate_abund_", k, ".pdf"), width = 12, height = 3)
 ggarrange(g_T_B, g_P_B, g_T_W, g_P_W, nrow=1)
 dev.off()
 
@@ -807,7 +799,7 @@ g_prec_heth <- ggplot(ecoregions_clim, aes(x = prec)) +
   geom_density(aes(fill = cat), adjust = 1, alpha=0.4) + theme_classic() +
   xlim(c(-2, 4)) + ggtitle("(n) HETH precipitation") + theme(legend.title=element_blank(), axis.title.x=element_blank())
 
-pdf("results/figures/Fig_S11_new2.pdf", width = 8, height = 15)
+pdf("results/Fig_S11_new2.pdf", width = 8, height = 15)
 ggarrange(g_temp_wifl, g_prec_wifl,
           g_temp_yewa, g_prec_yewa,
           g_temp_wiwa, g_prec_wiwa,
@@ -882,7 +874,7 @@ g_prec_heth <- ggplot(ecoregions_W_climate, aes(x = prec)) +
   geom_density(aes(fill = cat), adjust = 1, alpha=0.4) + theme_classic() +
   xlim(c(-2, 4)) + ggtitle("(n) HETH precipitation") + theme(legend.title=element_blank(), axis.title.x=element_blank())
 
-pdf("results/figures/Fig_S12_new2.pdf", width = 8, height = 15)
+pdf("results/Fig_S12_new2.pdf", width = 8, height = 15)
 ggarrange(g_temp_wifl, g_prec_wifl,
           g_temp_yewa, g_prec_yewa,
           g_temp_wiwa, g_prec_wiwa,
@@ -891,7 +883,6 @@ ggarrange(g_temp_wifl, g_prec_wifl,
           g_temp_pabu, g_prec_pabu, 
           g_temp_heth, g_prec_heth, nrow=7, ncol=2, common.legend = TRUE, legend="bottom")
 dev.off()
-
 
 
 ## Figures 2 and S9: patterns of simulated and empirical migratory connectivity and seasonal climate tracking
@@ -1026,12 +1017,12 @@ g_overlap_density_climate <- ggplot(niche_data, aes(x = niche_overlap_climate)) 
   xlab("Simulated 2D climate overlap (climate)")
 
 # Figure 2
-pdf("results/figures/Fig_2_new3.pdf", width = 16, height = 10)
+pdf("results/Fig_2_new3.pdf", width = 16, height = 10)
 ggarrange(g_conn, g_overlap_density, g_overlap_dist, g_overlap_temp_dist, g_overlap_prec_dist, g_conn_orsim, g_overlap_density_orsim, g_overlap_dist_orsim, g_overlap_temp_dist_orsim, g_overlap_prec_dist_orsim, g_conn_climate, g_overlap_density_climate, g_overlap_dist_climate, g_overlap_temp_dist_climate, g_overlap_prec_dist_climate, ncol=5, nrow=3, common.legend = TRUE, legend="bottom")
 dev.off()
 
 # Figure S9
-pdf("results/figures/Fig_S9_new3.pdf", width = 13, height = 13)
+pdf("results/Fig_S9_new3.pdf", width = 13, height = 13)
 ggarrange(g_conn, g_overlap_dist, g_overlap_temp_dist, g_overlap_prec_dist, g_conn_orsim, g_overlap_dist_orsim, g_overlap_temp_dist_orsim, g_overlap_prec_dist_orsim, g_conn_thermal, g_overlap_dist_thermal, g_overlap_temp_dist_thermal, g_overlap_prec_dist_thermal, g_conn_precipitation, g_overlap_dist_precipitation, g_overlap_temp_dist_precipitation, g_overlap_prec_dist_precipitation, ncol=4, nrow=4, common.legend = TRUE, legend="bottom")
 dev.off()
 
@@ -1125,7 +1116,7 @@ g_orsim_4 <- ggplot(niche_data2, aes(x = niche_overlap_prec, y = niche_overlap_p
   xlab("Empirical precipitation overlap") + ylab("Simulated precipitation overlap") +
   scale_size(name="1-rank") + scale_colour_discrete(name="")
 
-pdf("results/figures/Fig_3_new3.pdf", width = 8, height = 8)
+pdf("results/Fig_3_new3.pdf", width = 8, height = 8)
 ggarrange(g_orsim_1, g_orsim_2, g_orsim_3, g_orsim_4, nrow=2, ncol=2, common.legend = TRUE, legend="bottom")
 dev.off()
 
@@ -1159,7 +1150,7 @@ g_prec_pop <- ggplot(data = species_climate_spp %>% filter(population == pop.nam
   geom_density(aes(x = prec, fill = season), bw=0.25, kernel="gaussian", alpha=0.4) + xlim(c(-2, 4)) +
   xlab("Precipitation") + ylab("Density") + theme(legend.position="none")
 
-pdf(paste0("results/figures/Fig_S1_", k,".pdf"), width = 10, height = 3)
+pdf(paste0("results/Fig_S1_", k,".pdf"), width = 10, height = 3)
 grid.arrange(g_map_pop, g_temp_pop, g_prec_pop, ncol=3)
 dev.off()
 
@@ -1191,7 +1182,7 @@ g_prec_pop <- ggplot(data = species_climate_spp %>% filter(population == pop.nam
   geom_density(aes(x = prec, fill = season), bw=0.25, kernel="gaussian", alpha=0.4) + xlim(c(-2, 4)) +
   xlab("Precipitation") + ylab("Density") + theme(legend.position="none")
 
-pdf(paste0("results/figures/Fig_S2_", k,".pdf"), width = 10, height = 3)
+pdf(paste0("results/Fig_S2_", k,".pdf"), width = 10, height = 3)
 grid.arrange(g_map_pop, g_temp_pop, g_prec_pop, ncol=3)
 dev.off()
 
@@ -1224,7 +1215,7 @@ g_prec_pop <- ggplot(data = species_climate_spp %>% filter(population == pop.nam
   geom_density(aes(x = prec, fill = season), bw=0.25, kernel="gaussian", alpha=0.4) + xlim(c(-2, 4)) +
   xlab("Precipitation") + ylab("Density") + theme(legend.position="none")
 
-pdf(paste0("results/figures/Fig_S3_", k,".pdf"), width = 10, height = 3)
+pdf(paste0("results/Fig_S3_", k,".pdf"), width = 10, height = 3)
 grid.arrange(g_map_pop, g_temp_pop, g_prec_pop, ncol=3)
 dev.off()
 
@@ -1256,7 +1247,7 @@ g_prec_pop <- ggplot(data = species_climate_spp %>% filter(population == pop.nam
   geom_density(aes(x = prec, fill = season), bw=0.25, kernel="gaussian", alpha=0.4) + xlim(c(-2, 4)) +
   xlab("Precipitation") + ylab("Density") + theme(legend.position="none")
 
-pdf(paste0("results/figures/Fig_S4_", k,".pdf"), width = 10, height = 3)
+pdf(paste0("results/Fig_S4_", k,".pdf"), width = 10, height = 3)
 grid.arrange(g_map_pop, g_temp_pop, g_prec_pop, ncol=3)
 dev.off()
 
@@ -1286,7 +1277,7 @@ g_prec_pop <- ggplot(data = species_climate_spp %>% filter(population == pop.nam
   geom_density(aes(x = prec, fill = season), bw=0.25, kernel="gaussian", alpha=0.4) + xlim(c(-2, 4)) +
   xlab("Precipitation") + ylab("Density") + theme(legend.position="none")
 
-pdf(paste0("results/figures/Fig_S5_", k,".pdf"), width = 10, height = 3)
+pdf(paste0("results/Fig_S5_", k,".pdf"), width = 10, height = 3)
 grid.arrange(g_map_pop, g_temp_pop, g_prec_pop, ncol=3)
 dev.off()
 
@@ -1315,7 +1306,7 @@ g_prec_pop <- ggplot(data = species_climate_spp %>% filter(population == pop.nam
   geom_density(aes(x = prec, fill = season), bw=0.25, kernel="gaussian", alpha=0.4) + xlim(c(-2, 4)) +
   xlab("Precipitation") + ylab("Density") + theme(legend.position="none")
 
-pdf(paste0("results/figures/Fig_S6_", k,".pdf"), width = 10, height = 3)
+pdf(paste0("results/Fig_S6_", k,".pdf"), width = 10, height = 3)
 grid.arrange(g_map_pop, g_temp_pop, g_prec_pop, ncol=3)
 dev.off()
 
@@ -1347,6 +1338,6 @@ g_prec_pop <- ggplot(data = species_climate_spp %>% filter(population == pop.nam
   geom_density(aes(x = prec, fill = season), bw=0.25, kernel="gaussian", alpha=0.4) + xlim(c(-2, 4)) +
   xlab("Precipitation") + ylab("Density") + theme(legend.position="none")
 
-pdf(paste0("results/figures/Fig_S7_", k,".pdf"), width = 11, height = 3)
+pdf(paste0("results/Fig_S7_", k,".pdf"), width = 11, height = 3)
 grid.arrange(g_map_pop, g_temp_pop, g_prec_pop, ncol=3)
 dev.off()
