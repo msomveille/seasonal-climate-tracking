@@ -10,5 +10,9 @@ The *resources* folder contains the file **data_for_analysis_final.csv**, which 
 
 ## Running the analysis
 
-To run the analysis, you need to first download the ecoregion polygons (shapefile format), climate layers (raster format) and species seasonal relative abundance surfaces (raster format), from freely available sources (see manuscript), and add these files to the *resources* folder. The code in the file **seasonal_climate_tracking_analysis.R** can then be run until line 168, which then requires to run the Python script **orsim.py**. Once ORSIM finished running, the rest of the code in the file **seasonal_climate_tracking_analysis.R** can be run to output the results presented in the manuscript, which will be saved in the *results* folder.
+To run the analysis, you need to first download the ecoregion polygons (shapefile format), climate layers (raster format) and species seasonal relative abundance surfaces (raster format), from freely available sources (see manuscript), and add these files to the *resources* folder. 
+
+The code in the file **seasonal_climate_tracking_analysis.R** can then be run using the latest version of R, until line 168. It then requires to run the Python script **orsim.py** using Python 3. Once ORSIM finished running, the rest of the code in the file **seasonal_climate_tracking_analysis.R** can be run to output the results presented in the manuscript, which will be saved in the *results* folder.
+
+All the required R packages and Python libraries are indicated at the start of the respective script files. These will need to be installed on local machine prior to running the analysis.
 
