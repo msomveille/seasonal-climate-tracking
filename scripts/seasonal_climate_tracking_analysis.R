@@ -14,7 +14,7 @@ library(gridExtra)
 
 ## Load data for sampled individuals
 ## This is the metadata obtained from the previously conducted genoscape analyses. It has 5 columns: species, season, population, longitude, and latitude. Each row is an individual sample.
-data_for_analysis <- read_csv("results/data_for_analysis_final.csv") %>%
+data_for_analysis <- read_csv("resources/data_for_analysis_final.csv") %>%
   filter(!(population %in% c("KER", "SCA", "WM", "SouthDakota"))) #remove populations with less than 3 samples during at least one season
 species.names <- unique(data_for_analysis$species)
 data_for_analysis$longitude[which(data_for_analysis$longitude == 104.36700)] <- -104.36700 # correct a mistake
