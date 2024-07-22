@@ -4,7 +4,8 @@ This repository contains three folders: scripts (which contains the code to run 
 
 In the scripts folder, the file seasonal_climate_tracking_analysis.R contains the R code used for the analysis, and the file orsim.py contains the Python code used to run the ORSIM model.
 
-The resources folder contains the file data_for_analysis_final.csv, which has the metadata (i.e. species, season, population and geographical coordinates for each sample) obtained from previously conducted genoscape analyses (see Data Accessibility Statement). The ecoregion polygons, climate rasters and species seasonal relative abundance surfaces, can all be downloaded from freely available sources (see manuscript), and added to the resources folder so that these datasets can be used in the seasonal_climate_tracking_analysis.R script.
+The resources folder contains the file data_for_analysis_final.csv, which is a table with the following information for each individual used in the analysis: species, season of sample collection (i.e. breeding or wintering), population assignment, and geographical coordinates of sample collection). This data was obtained from previously conducted genoscape analyses (see main text and references in the manuscript), whose raw genetic data is accessible via the links provided in the Data Accessibility Statement in the manuscript. 
 
+To run the analysis, you need to first download the ecoregion polygons (shapefile format), climate layers (raster format) and species seasonal relative abundance surfaces (raster format), from freely available sources (see manuscript), and add these files to the resources folder. The code in the file seasonal_climate_tracking_analysis.R can then be run until line XX, which then requires to run the python script orsim.py. Once ORSIM finished running, the rest of the code in the file seasonal_climate_tracking_analysis.R can be run to output the results presented in the manuscript.
 
 
